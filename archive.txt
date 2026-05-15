@@ -1,0 +1,53 @@
+app/
+├── (store)/                          # Store route group (public pages)
+│   ├── layout.tsx                    # Store layout (with Clerk auth buttons)
+│   ├── page.tsx                      # Homepage
+│   ├── products/
+│   │   ├── page.tsx                  # /products - All products listing
+│   │   └── [slug]/
+│   │       └── page.tsx              # /products/[slug] - Single product
+│   ├── categories/
+│   │   ├── page.tsx                  # /categories - All categories
+│   │   └── [slug]/
+│   │       └── page.tsx              # /categories/[slug] - Category products
+│   ├── cart/
+│   │   └── page.tsx                  # /cart - Shopping cart
+│   ├── checkout/
+│   │   └── page.tsx                  # /checkout - Checkout process
+│   └── search/
+│       └── page.tsx                  # /search - Search results
+│
+├── (dashboard)/                      # Protected route group (requires auth)
+│   ├── layout.tsx                    # Dashboard layout with Clerk auth guard
+│   ├── account/
+│   │   ├── page.tsx                  # /account - Profile dashboard
+│   │   ├── orders/
+│   │   │   ├── page.tsx              # /account/orders - All orders
+│   │   │   └── [orderId]/
+│   │   │       └── page.tsx          # /account/orders/123 - Single order
+│   │   ├── wishlist/
+│   │   │   └── page.tsx              # /account/wishlist - Saved products
+│   │   └── addresses/
+│   │       └── page.tsx              # /account/addresses - Saved addresses
+│   └── settings/
+│       └── page.tsx                  # /settings - Account settings
+│
+│
+├── admin/                            # Admin only (requires admin role from Clerk)
+│   ├── layout.tsx                    # Admin layout + admin guard
+│   ├── page.tsx                      # /admin - Admin dashboard
+│   ├── products/
+│   │   ├── page.tsx                  # /admin/products - Manage products
+│   │   └── [id]/
+│   │       └── page.tsx              # /admin/products/123 - Edit product
+│   ├── orders/
+│   │   └── page.tsx                  # /admin/orders - Manage orders
+│   └── users/
+│       └── page.tsx                  # /admin/users - Manage users
+│
+└── loading.tsx                       # Global loading UI
+    error.tsx                         # Global error UI
+    not-found.tsx                     # 404 page
+
+
+3. Admin Order Invoice API (src/app/api/admin/orders/[id]/invoice/route.ts) - Naya
