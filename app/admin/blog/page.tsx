@@ -62,8 +62,8 @@ export default function AdminBlogPage() {
       setFilteredPosts(data.posts);
       
       // Extract unique categories
-      const uniqueCategories = [...new Set(data.posts.map((p: BlogPost) => p.category))];
-      setCategories(uniqueCategories);
+     const uniqueCategories = [...new Set(data.posts.map((p: BlogPost) => p.category))] as string[];
+setCategories(uniqueCategories);
     } catch (error) {
       console.error('Failed to fetch posts:', error);
     } finally {

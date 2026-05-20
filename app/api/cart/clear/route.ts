@@ -1,13 +1,17 @@
-import { auth } from '@clerk/nextjs/server';
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { connectToDatabase } from '@/lib/mongodb';
 import Cart from '@/models/Cart';
+import { authOptions } from '../../auth/[...nextauth]/route';
+import { getServerSession } from 'next-auth';
+import { Types } from 'mongoose';
 
 export async function DELETE(req: NextRequest) {
   try {
-    const { userId } = await auth();
+
+        const session = await getServerSession(authOptions);
     
-    if (!userId) {
+    
+    if (!session?.user?.id) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -15,7 +19,7 @@ export async function DELETE(req: NextRequest) {
     
     await connectToDatabase();
     
-    const cart = await Cart.findOne({ userId });
+    const cart = await Cart.findOne({ userId: session.user.id });
     
     if (!cart) {
       return NextResponse.json({ success: true });

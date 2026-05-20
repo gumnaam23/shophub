@@ -5,7 +5,7 @@ import Product from '@/models/Product';
 interface ProductQuery {
   category?: string;
   isFeatured?: boolean;
-  isNew?: boolean;
+  isNewProduct?: boolean;
   price?: {
     $gte?: number;
     $lte?: number;
@@ -34,7 +34,7 @@ export async function GET(request: NextRequest) {
 
     if (category) query.category = category;
     if (isFeatured === 'true') query.isFeatured = true;
-    if (isNew === 'true') query.isNew = true;
+    if (isNew === 'true') query.isNewProduct = true;
     
     if (minPrice || maxPrice) {
       query.price = {};

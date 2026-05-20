@@ -31,8 +31,7 @@ export function UserProfile({ isMobile = false, onClose }: UserProfileProps) {
 
   const isSignedIn = session?.user;
   const user = session?.user;
-  const role = (user as IUser)?.role || 'user';
-
+const role = (user as unknown as { role?: string })?.role || 'user';
   // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {

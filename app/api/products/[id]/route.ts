@@ -4,9 +4,8 @@ import Product from '@/models/Product';
 import mongoose from 'mongoose';
 
 interface RouteParams {
-  params: {
-    id: string;
-  };
+    params: Promise<{ id: string }>; 
+
 }
 
 export async function GET(

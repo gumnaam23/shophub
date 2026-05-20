@@ -54,7 +54,7 @@ export async function GET() {
       return acc;
     }, {} as Record<string, number>);
 
-    const repeatCustomers = Object.values(ordersByCustomer).filter(count => count > 1).length;
+    const repeatCustomers = Object.values(ordersByCustomer).filter(count => (count as number) > 1).length;
 
     return NextResponse.json({
       success: true,

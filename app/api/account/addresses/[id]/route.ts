@@ -6,9 +6,7 @@ import { Types } from 'mongoose';
 import { authOptions } from '../../../auth/[...nextauth]/route';
 
 interface RouteParams {
-  params: {
-    id: string;
-  };
+  params: Promise<{ id: string }>;  // ✅ Yeh sahi hai
 }
 
 // Add this GET method to the same file

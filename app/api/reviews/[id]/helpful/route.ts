@@ -6,9 +6,8 @@ import mongoose from 'mongoose';
 import { authOptions } from '../../../auth/[...nextauth]/route';
 
 interface RouteParams {
-  params: {
-    id: string;
-  };
+    params: Promise<{ id: string }>; 
+
 }
 
 export async function POST(

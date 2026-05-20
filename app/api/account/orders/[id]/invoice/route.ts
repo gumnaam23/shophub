@@ -6,9 +6,7 @@ import { Types } from 'mongoose';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 
 interface RouteParams {
-  params: {
-    id: string;
-  };
+    params: Promise<{ id: string }>; 
 }
 
 // GET /api/account/orders/[id]/invoice - Get order invoice (JSON for now, PDF later)

@@ -4,9 +4,8 @@ import Category from '@/models/Category';
 import mongoose from 'mongoose';
 
 interface RouteParams {
-  params: {
-    id: string;
-  };
+   params: Promise<{ id: string }>; 
+
 }
 
 export async function GET(

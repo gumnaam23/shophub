@@ -7,9 +7,8 @@ import { Types } from 'mongoose';
 import { authOptions } from '../../../auth/[...nextauth]/route';
 
 interface RouteParams {
-    params: {
-        id: string;
-    };
+      params: Promise<{ id: string }>; 
+
 }
 
 // GET single product

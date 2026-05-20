@@ -27,15 +27,15 @@ export const authOptions: NextAuthOptions = {
         }
 
         await connectToDatabase();
-        
+
         const user = await User.findOne({ email: credentials.email }).select("+password");
-        
+
         if (!user) {
           throw new Error("User not found");
         }
 
         const isValid = await bcrypt.compare(credentials.password, user.password);
-        
+
         if (!isValid) {
           throw new Error("Invalid password");
         }
@@ -44,7 +44,7 @@ export const authOptions: NextAuthOptions = {
           id: user._id.toString(),
           email: user.email,
           name: user.name,
-          role: user.role || 'user', // ✅ Role set karo
+          role: user.role || 'user',
         };
       }
     })
@@ -54,16 +54,16 @@ export const authOptions: NextAuthOptions = {
       if (account?.provider === "google") {
         try {
           await connectToDatabase();
-          
+
           // Check if user exists in database
           let existingUser = await User.findOne({ email: user.email });
-          
+
           if (!existingUser) {
             existingUser = await User.create({
               email: user.email,
               name: user.name || profile?.name || 'User',
               image: user.image,
-              role: 'user', 
+              role: 'user',
               isActive: true,
             });
             console.log('New user created with role:', existingUser.role);
@@ -74,9 +74,9 @@ export const authOptions: NextAuthOptions = {
               console.log('Role added to existing user:', existingUser.role);
             }
           }
-          
+
           user.id = existingUser._id.toString();
-          
+
           return true;
         } catch (error) {
           console.error("Google sign in error:", error);
@@ -85,15 +85,15 @@ export const authOptions: NextAuthOptions = {
       }
       return true;
     },
-    
+
     async jwt({ token, user, account }) {
       if (user) {
         token.id = user.id;
-        token.role = (user as IUser).role || 'user';
+        token.role = (user as unknown as IUser).role || 'user';
         token.email = user.email;
         token.name = user.name;
       }
-      
+
       if (token.email && !token.role) {
         try {
           await connectToDatabase();
@@ -106,13 +106,13 @@ export const authOptions: NextAuthOptions = {
           console.error('Error fetching user role:', error);
         }
       }
-      
+
       if (account) {
         token.provider = account.provider;
       }
       return token;
     },
-    
+
     async session({ session, token }) {
       if (session.user) {
         session.user.id = token.id as string;
@@ -124,9 +124,12 @@ export const authOptions: NextAuthOptions = {
     }
   },
   pages: {
-    signIn: "/auth/login",
-    signUp: "/auth/register",
-  },
+  signIn: "/auth/login", 
+  signOut: "/auth/logout",    
+  error: "/auth/error",       
+  verifyRequest: "/auth/verify", 
+  newUser: "/auth/welcome",   
+},
   session: {
     strategy: "jwt",
   },

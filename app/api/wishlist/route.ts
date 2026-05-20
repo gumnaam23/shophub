@@ -49,7 +49,7 @@ export async function GET() {
       wishlist = { items: [] };
     }
 
-    const formattedItems = wishlist.items.map((item) => ({
+    const formattedItems = wishlist.items.map((item: PopulatedWishlistItem) => ({
       _id: item.productId._id,
       name: item.productId.name,
       price: item.productId.price,

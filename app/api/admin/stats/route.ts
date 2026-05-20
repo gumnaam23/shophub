@@ -73,6 +73,7 @@ export async function GET() {
       : 0;
     const ratingChange = lastAvgRating > 0 ? ((averageRating - lastAvgRating) / lastAvgRating) * 100 : 0;
 
+
     return NextResponse.json({
       totalRevenue: currentRevenue,
       totalOrders: currentOrders,

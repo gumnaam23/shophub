@@ -5,10 +5,9 @@ import Address from '@/models/Address';
 import { Types } from 'mongoose';
 import { authOptions } from '../../../../auth/[...nextauth]/route';
 
+// ✅ Fix: params ab Promise mein wrapped hai
 interface RouteParams {
-  params: {
-    id: string;
-  };
+  params: Promise<{ id: string }>;
 }
 
 // PUT /api/account/addresses/[id]/default - Set address as default
@@ -26,7 +25,7 @@ export async function PUT(
       );
     }
 
-    const { id } = await params;
+    const { id } = await params; // ✅ Already await kar rahe ho, sahi hai
 
     if (!Types.ObjectId.isValid(id)) {
       return NextResponse.json(

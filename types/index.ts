@@ -12,7 +12,7 @@ export interface IProduct {
   rating: number;
   reviews: number;
   isFeatured: boolean;
-  isNew: boolean;
+  isNewProduct: boolean;
   isOnSale: boolean;
   saleEnds?: Date;
   createdAt: Date;

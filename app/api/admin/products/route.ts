@@ -33,7 +33,7 @@ export async function GET(request: NextRequest) {
     const status = searchParams.get('status');
     const category = searchParams.get('category');
 
-    const query: { status: string, category: string} = {};
+    const query: { status?: string; category?: string } = {};
     if (status && status !== 'all') {
       query.status = status;
     }

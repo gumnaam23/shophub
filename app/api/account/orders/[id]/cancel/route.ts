@@ -6,9 +6,7 @@ import { Types } from 'mongoose';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 
 interface RouteParams {
-  params: {
-    id: string;
-  };
+  params: Promise<{ id: string }>; 
 }
 
 // POST /api/account/orders/[id]/cancel - Cancel order

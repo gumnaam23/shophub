@@ -113,7 +113,7 @@ export default function DashboardLayout({
               <div>
                 <h3 className="font-semibold text-lg">{session.user?.name || 'User'}</h3>
                 <p className="text-sm text-gray-500">{session.user?.email}</p>
-                {session.user?.role === 'admin' && (
+                {session && (session.user as { role?: string })?.role === 'admin' && (
                   <span className="inline-block mt-1 text-xs bg-black text-white px-2 py-0.5 rounded">
                     Admin
                   </span>
@@ -132,8 +132,8 @@ export default function DashboardLayout({
                   href={item.href}
                   className={`
                     flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200
-                    ${isActive 
-                      ? 'bg-black text-white' 
+                    ${isActive
+                      ? 'bg-black text-white'
                       : 'text-gray-700 hover:bg-gray-100'
                     }
                   `}
@@ -219,8 +219,8 @@ export default function DashboardLayout({
                     onClick={() => setIsMobileMenuOpen(false)}
                     className={`
                       flex items-center space-x-3 px-4 py-3 rounded-lg transition-all
-                      ${isActive 
-                        ? 'bg-black text-white' 
+                      ${isActive
+                        ? 'bg-black text-white'
                         : 'text-gray-700 hover:bg-gray-100'
                       }
                     `}

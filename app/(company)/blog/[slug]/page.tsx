@@ -9,7 +9,6 @@ import {
   CalendarIcon,
   ClockIcon,
   HeartIcon,
-  ChatBubbleLeftRightIcon,
   EyeIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
@@ -17,7 +16,6 @@ import {
   BookmarkIcon,
 } from '@heroicons/react/24/outline';
 import { HeartIcon as HeartSolidIcon } from '@heroicons/react/24/solid';
-import Button from '@/components/ui/Button';
 
 interface BlogPost {
   _id: string;

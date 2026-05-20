@@ -33,7 +33,7 @@ export async function GET(request: NextRequest) {
     const limit = parseInt(searchParams.get('limit') || '20');
     const skip = (page - 1) * limit;
 
-    const query: {orderStatus: string} = {};
+    const query: { orderStatus?: string } = {};
     if (status && status !== 'all') {
       query.orderStatus = status;
     }

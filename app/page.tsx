@@ -19,9 +19,10 @@ import {
 import { StarIcon as StarSolidIcon } from '@heroicons/react/24/solid';
 import Button from '@/app/components/ui/Button';
 import { ICategory, IProduct } from '@/types';
-import { CartItemFrontend } from '@/types/cart';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+
 
 export interface CartItemType {
   _id: string;
@@ -192,10 +193,9 @@ const ProductCard = ({ product, index }: { product: IProduct; index: number }) =
   const [isHovered, setIsHovered] = useState(false);
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [isAddingToCart, setIsAddingToCart] = useState(false);
+  const router = useRouter()
 
-  const handleAddToCart = async (e: React.MouseEvent) => {
-    e.preventDefault();
-
+  const handleAddToCart = async () => {
     if (isAddingToCart) return;
 
     setIsAddingToCart(true);
@@ -204,53 +204,29 @@ const ProductCard = ({ product, index }: { product: IProduct; index: number }) =
       const sessionRes = await fetch('/api/auth/session');
       const sessionData = await sessionRes.json();
 
-      if (sessionData?.user?.id) {
-        const response = await fetch('/api/cart', {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            productId: product._id,
-            quantity: 1
-          }),
-        });
+      if (!sessionData?.user?.id) {
+        alert('Please login to add items to cart');
+        router.push('/auth/login');
+        return;
+      }
 
-        if (response.ok) {
-          console.log('Product added to cart successfully');
-          // Dispatch event to update cart count
-          window.dispatchEvent(new Event('cartUpdated'));
-        } else {
-          const error = await response.json();
-          console.error('Failed to add to cart:', error.error);
-        }
-      } else {
-        // ✅ Guest user - save to localStorage
-        const savedCart = localStorage.getItem('cart');
-        const cart: CartItemFrontend[] = savedCart ? JSON.parse(savedCart) : [];
+      const response = await fetch('/api/cart', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          productId: product._id,
+          quantity: 1
+        }),
+      });
 
-        const existingItemIndex = cart.findIndex((item: CartItemFrontend) => item._id === product._id);
-
-        if (existingItemIndex > -1) {
-          cart[existingItemIndex].quantity += quantity;
-        } else {
-          const newItem: CartItemFrontend = {
-            _id: product._id as string,
-            name: product.name,
-            price: product.price,
-            quantity: quantity,
-            image: product.images[0],
-            slug: product.slug,
-            stock: product.stock,
-            isOnSale: product.isOnSale,
-            comparePrice: product.comparePrice,
-          };
-          cart.push(newItem);
-        }
-
-        localStorage.setItem('cart', JSON.stringify(cart));
+      if (response.ok) {
+        console.log('Product added to cart successfully');
         window.dispatchEvent(new Event('cartUpdated'));
-        console.log('Product added to cart (guest)');
+      } else {
+        const error = await response.json();
+        console.error('Failed to add to cart:', error.error);
       }
     } catch (error) {
       console.error('Error adding to cart:', error);
@@ -258,6 +234,18 @@ const ProductCard = ({ product, index }: { product: IProduct; index: number }) =
       setIsAddingToCart(false);
     }
   };
+
+  // Button mein
+  <Button
+    variant="primary"
+    size="sm"
+    onClick={() => handleAddToCart()}  // ✅ Arrow function wrapper
+    disabled={isAddingToCart}
+  >
+    {isAddingToCart ? 'Adding...' : 'Add to Cart'}
+  </Button>
+
+
 
   return (
     <motion.div
@@ -284,7 +272,7 @@ const ProductCard = ({ product, index }: { product: IProduct; index: number }) =
             </div>
           )}
 
-          {product.isNew && (
+          {product.isNewProduct  && (
             <div className="absolute top-4 left-4 bg-green-500 text-white px-3 py-1 rounded-full text-sm font-semibold z-10">
               NEW
             </div>
@@ -350,7 +338,7 @@ const ProductCard = ({ product, index }: { product: IProduct; index: number }) =
             <Button
               variant="primary"
               size="sm"
-              onClick={handleAddToCart}
+              onClick={() => handleAddToCart()}
               disabled={isAddingToCart}
             >
               {isAddingToCart ? 'Adding...' : 'Add to Cart'}

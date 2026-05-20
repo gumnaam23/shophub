@@ -8,9 +8,8 @@ import { Types } from 'mongoose';
 import { authOptions } from '../../../auth/[...nextauth]/route';
 
 interface RouteParams {
-  params: {
-    id: string;
-  };
+    params: Promise<{ id: string }>; 
+
 }
 
 export async function GET(
@@ -65,33 +64,33 @@ export async function GET(
     )[0];
 
     const customerWithData = {
-      _id: customer._id,
-      name: customer.name,
-      email: customer.email,
-      image: customer.image,
-      phone: customer.phone || '',
-      createdAt: customer.createdAt,
-      ordersCount,
-      totalSpent,
-      addresses: addresses.length,
-      lastOrderDate: lastOrder?.createdAt,
-      status: customer.isActive ? 'active' : 'inactive',
-      orders: orders.map(order => ({
-        _id: order._id,
-        orderNumber: order.orderNumber,
-        total: order.total,
-        status: order.orderStatus,
-        createdAt: order.createdAt,
-      })),
-      addresses: addresses.map(address => ({
-        _id: address._id,
-        fullName: address.fullName,
-        addressLine1: address.addressLine1,
-        city: address.city,
-        state: address.state,
-        isDefault: address.isDefault,
-      })),
-    };
+  _id: customer._id,
+  name: customer.name,
+  email: customer.email,
+  image: customer.image,
+  phone: customer.phone || '',
+  createdAt: customer.createdAt,
+  ordersCount,
+  totalSpent,
+  addressCount: addresses.length,  // ✅ 'addresses' ki jagah 'addressCount'
+  lastOrderDate: lastOrder?.createdAt,
+  status: customer.isActive ? 'active' : 'inactive',
+  recentOrders: orders.map(order => ({  // ✅ 'orders' ki jagah 'recentOrders'
+    _id: order._id,
+    orderNumber: order.orderNumber,
+    total: order.total,
+    status: order.orderStatus,
+    createdAt: order.createdAt,
+  })),
+  addresses: addresses.map(address => ({  // ✅ Ye rahega
+    _id: address._id,
+    fullName: address.fullName,
+    addressLine1: address.addressLine1,
+    city: address.city,
+    state: address.state,
+    isDefault: address.isDefault,
+  })),
+};
 
     return NextResponse.json({
       success: true,

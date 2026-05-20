@@ -28,7 +28,7 @@ interface Product {
   stock: number;
   rating: number;
   isFeatured: boolean;
-  isNew: boolean;
+  isNewProduct: boolean;
   isOnSale: boolean;
   status: 'active' | 'draft' | 'archived';
   createdAt: string;
@@ -58,9 +58,9 @@ export default function AdminProductsPage() {
       const data = await response.json();
       setProducts(data.products);
       setFilteredProducts(data.products);
-      
+
       // Extract unique categories
-      const uniqueCategories = [...new Set(data.products.map((p: Product) => p.category))];
+      const uniqueCategories = [...new Set(data.products.map((p: Product) => p.category))] as string[];
       setCategories(uniqueCategories);
     } catch (error) {
       console.error('Failed to fetch products:', error);
@@ -376,11 +376,10 @@ export default function AdminProductsPage() {
                       <p className="text-sm text-gray-500 mt-1">{product.stock} units</p>
                     </td>
                     <td className="px-6 py-4">
-                      <span className={`inline-flex items-center space-x-1 px-2 py-1 rounded-full text-xs font-semibold ${
-                        product.status === 'active' ? 'bg-green-100 text-green-800' :
-                        product.status === 'draft' ? 'bg-yellow-100 text-yellow-800' :
-                        'bg-gray-100 text-gray-800'
-                      }`}>
+                      <span className={`inline-flex items-center space-x-1 px-2 py-1 rounded-full text-xs font-semibold ${product.status === 'active' ? 'bg-green-100 text-green-800' :
+                          product.status === 'draft' ? 'bg-yellow-100 text-yellow-800' :
+                            'bg-gray-100 text-gray-800'
+                        }`}>
                         {product.status === 'active' && <CheckCircleIcon className="w-3 h-3" />}
                         {product.status === 'draft' && <ClockIcon className="w-3 h-3" />}
                         {product.status === 'archived' && <XCircleIcon className="w-3 h-3" />}

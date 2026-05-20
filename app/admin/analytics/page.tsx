@@ -26,6 +26,9 @@ interface AnalyticsData {
     percentageChange: number;
     averageValue: number;
     byStatus: { status: string; count: number }[];
+    daily?: { date: string; amount: number }[];  // ✅ Add this
+    weekly?: { week: string; amount: number }[]; // ✅ Add this
+    monthly?: { month: string; amount: number }[]; // ✅ Add this
   };
   customers: {
     total: number;
@@ -56,6 +59,7 @@ export default function AdminAnalyticsPage() {
   const [loading, setLoading] = useState(true);
   const [period, setPeriod] = useState<'daily' | 'weekly' | 'monthly'>('monthly');
   const [selectedChart, setSelectedChart] = useState<'revenue' | 'orders'>('revenue');
+
 
   useEffect(() => {
     fetchAnalytics();
@@ -100,8 +104,10 @@ export default function AdminAnalyticsPage() {
     );
   }
 
+
+
   const maxRevenue = Math.max(...analytics.revenue[period].map(d => d.amount));
-  const maxValue = selectedChart === 'revenue' ? maxRevenue : Math.max(...(analytics.orders.daily?.map(o => o.amount) || [0]));
+  const maxValue = maxRevenue;  // ✅ Yeh line add karo
 
   return (
     <div className="max-w-7xl mx-auto text-gray-600">
@@ -223,11 +229,13 @@ export default function AdminAnalyticsPage() {
             </button>
             <button
               onClick={() => setSelectedChart('orders')}
-              className={`px-4 py-2 rounded-lg transition-colors ${selectedChart === 'orders' ? 'bg-black text-white' : 'bg-gray-100 text-gray-700'
+              disabled 
+              className={`px-4 py-2 rounded-lg transition-colors opacity-50 cursor-not-allowed ${selectedChart === 'orders' ? 'bg-black text-white' : 'bg-gray-100 text-gray-700'
                 }`}
             >
               Orders
             </button>
+
           </div>
         </div>
 
@@ -235,9 +243,8 @@ export default function AdminAnalyticsPage() {
           <div className="flex items-end h-full space-x-2">
 
             {analytics.revenue[period].map((item: ChartItem, index: number) => {
-              const height = selectedChart === 'revenue'
-                ? (item.amount / maxRevenue) * 100
-                : ((analytics.orders[period]?.[index]?.amount || 0) / maxValue) * 100;
+              const height = (item.amount / maxRevenue) * 100;  // Sirf revenue
+
 
               // Get label based on period
               const getLabel = () => {
@@ -299,9 +306,9 @@ export default function AdminAnalyticsPage() {
                 <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
                   <div
                     className={`h-full rounded-full ${status.status === 'delivered' ? 'bg-green-500' :
-                        status.status === 'shipped' ? 'bg-blue-500' :
-                          status.status === 'processing' ? 'bg-yellow-500' :
-                            status.status === 'pending' ? 'bg-orange-500' : 'bg-red-500'
+                      status.status === 'shipped' ? 'bg-blue-500' :
+                        status.status === 'processing' ? 'bg-yellow-500' :
+                          status.status === 'pending' ? 'bg-orange-500' : 'bg-red-500'
                       }`}
                     style={{ width: `${(status.count / analytics.orders.total) * 100}%` }}
                   />

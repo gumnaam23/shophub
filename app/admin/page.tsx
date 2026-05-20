@@ -66,7 +66,11 @@ export default function AdminDashboard() {
     const fetchDashboardData = async () => {
       setLoading(true);
       try {
-        const [statsRes, ordersRes, productsRes] = await Promise.all([
+        const [
+          statsRes,
+          ordersRes,
+          productsRes
+        ] = await Promise.all([
           fetch('/api/admin/stats'),
           fetch('/api/admin/orders/recent'),
           fetch('/api/admin/products/top'),
@@ -75,6 +79,7 @@ export default function AdminDashboard() {
         const statsData = await statsRes.json();
         const ordersData = await ordersRes.json();
         const productsData = await productsRes.json();
+
 
         setStats(statsData);
         setRecentOrders(ordersData.orders);

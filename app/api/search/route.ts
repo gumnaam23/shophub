@@ -12,7 +12,7 @@ export async function GET(request: Request) {
 
 
     const searchQuery: {
-      $or?: Array<{ [key: string]: { $regex: string; $options: string } }>;
+      $or?: Array<{ [key: string]: { $regex: string; $options: string } | { $in: RegExp[] } }>;
       category?: string;
     } = {};
 
@@ -44,7 +44,7 @@ export async function GET(request: Request) {
       allProducts.forEach(product => {
         const productWords = product.name.toLowerCase().split(' ');
         words.forEach(word => {
-          productWords.forEach(pWord => {
+          productWords.forEach((pWord: string) => {
             if (pWord.includes(word) && pWord !== word && pWord.length > 3) {
               suggestionsSet.add(pWord);
             }

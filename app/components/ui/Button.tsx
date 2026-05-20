@@ -9,6 +9,7 @@ interface ButtonProps {
   onClick?: () => void;
   disabled?: boolean;
   type?: 'button' | 'submit' | 'reset';
+  className?: string;
 }
 
 export default function Button({ 
@@ -18,7 +19,8 @@ export default function Button({
   fullWidth = false,
   onClick,
   disabled = false,
-  type = 'button'
+  type = 'button',
+  className = '' 
 }: ButtonProps) {
   const variants = {
     primary: 'bg-black text-white hover:bg-gray-800',
@@ -46,6 +48,7 @@ export default function Button({
         ${fullWidth ? 'w-full' : ''}
         rounded-lg font-semibold transition-all duration-300
         ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
+        ${className}
       `}
     >
       {children}

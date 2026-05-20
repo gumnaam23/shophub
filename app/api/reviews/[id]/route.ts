@@ -5,11 +5,11 @@ import Review from '@/models/Review';
 import Product from '@/models/Product';
 import mongoose from 'mongoose';
 import { authOptions } from '../../auth/[...nextauth]/route';
+import User from '@/models/User';
 
 interface RouteParams {
-  params: {
-    id: string;
-  };
+    params: Promise<{ id: string }>; 
+
 }
 
 // GET /api/reviews/[id] - Get single review

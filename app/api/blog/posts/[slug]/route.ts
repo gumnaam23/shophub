@@ -3,9 +3,8 @@ import { connectToDatabase } from '@/lib/mongodb';
 import BlogPost from '@/models/BlogPost';
 
 interface RouteParams {
-  params: {
-    slug: string;
-  };
+    params: Promise<{ slug: string }>; 
+
 }
 
 export async function GET(

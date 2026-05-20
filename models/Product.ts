@@ -14,7 +14,7 @@ export interface IProduct extends Document {
   rating: number;
   reviews: number;
   isFeatured: boolean;
-  isNew: boolean;
+  isNewProduct?: boolean;
   isOnSale: boolean;
   status: 'active' | 'draft' | 'archived';
   specifications?: Record<string, string>;
@@ -38,13 +38,13 @@ const ProductSchema = new Schema<IProduct>(
     rating: { type: Number, default: 0, min: 0, max: 5 },
     reviews: { type: Number, default: 0 },
     isFeatured: { type: Boolean, default: false, index: true },
-    isNew: { type: Boolean, default: false, index: true },
+    isNewProduct: { type: Boolean, default: false, index: true },
     isOnSale: { type: Boolean, default: false },
     status: { type: String, enum: ['active', 'draft', 'archived'], default: 'draft' },
     specifications: { type: Schema.Types.Mixed, default: {} },
     saleEnds: { type: Date },
   },
-  { 
+  {
     timestamps: true,
     toJSON: { virtuals: true },
     toObject: { virtuals: true }
@@ -52,7 +52,7 @@ const ProductSchema = new Schema<IProduct>(
 );
 
 // Auto-generate slug before saving
-ProductSchema.pre('save', function(next) {
+ProductSchema.pre('save', function () {
   if (this.isModified('name')) {
     this.slug = this.name
       .toLowerCase()
@@ -60,7 +60,6 @@ ProductSchema.pre('save', function(next) {
       .replace(/-+/g, '-')
       .replace(/^-|-$/g, '');
   }
-  next();
 });
 
 // Indexes for better query performance
@@ -72,7 +71,7 @@ ProductSchema.index({ isFeatured: 1, createdAt: -1 });
 ProductSchema.index({ status: 1 });
 
 // Virtual for discount percentage
-ProductSchema.virtual('discountPercentage').get(function() {
+ProductSchema.virtual('discountPercentage').get(function () {
   if (this.comparePrice && this.comparePrice > this.price) {
     return Math.round(((this.comparePrice - this.price) / this.comparePrice) * 100);
   }
@@ -80,7 +79,7 @@ ProductSchema.virtual('discountPercentage').get(function() {
 });
 
 // Virtual for isInStock
-ProductSchema.virtual('isInStock').get(function() {
+ProductSchema.virtual('isInStock').get(function () {
   return this.stock > 0;
 });
 

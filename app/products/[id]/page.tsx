@@ -900,7 +900,7 @@ export default function SingleProductPage() {
 
     try {
       // Check if user is logged in
-      const isLoggedIn = session.user.id;
+      const isLoggedIn = session?.user.id;
 
 
       if (isLoggedIn) {
