@@ -53,7 +53,6 @@ interface FilterSectionProps {
   children: React.ReactNode;
 }
 
-export const dynamic = 'force-dynamic';
 
 export default function SearchPage() {
   const searchParams = useSearchParams();
