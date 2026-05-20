@@ -50,7 +50,7 @@ const CartItemComponent = ({
 
     const handleQuantityChange = async (newQuantity: number) => {
         if (newQuantity < 1 || newQuantity > item.stock) return;
-        
+
         setLocalQuantity(newQuantity);
         setUpdating(true);
         await onUpdateQuantity(item._id, newQuantity);
@@ -159,7 +159,7 @@ const EmptyCart = () => {
             </div>
             <h2 className="text-2xl font-bold mb-4">Your cart is empty</h2>
             <p className="text-gray-600 mb-8">
-               {` Looks like you haven't added any items to your cart yet.`}
+                {` Looks like you haven't added any items to your cart yet.`}
             </p>
             <Link href="/products">
                 <Button variant="primary" size="lg">
@@ -311,8 +311,6 @@ export default function CartPage() {
                     if (response.ok) {
                         const data = await response.json();
                         setCartItems(data.items || []);
-                        // Also update localStorage for consistency
-                        localStorage.setItem('cart', JSON.stringify(data.items || []));
                     }
                 } else {
                     // Guest user - load from localStorage
@@ -335,7 +333,6 @@ export default function CartPage() {
     useEffect(() => {
         if (!loading && !syncing) {
             // Always save to localStorage
-            localStorage.setItem('cart', JSON.stringify(cartItems));
 
             // If logged in, sync to backend
             if (isSignedIn && cartItems.length > 0) {

@@ -243,6 +243,105 @@ const ProductInfo = ({
 }) => {
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
+  const router = useRouter()
+
+  // Wishlist Toggle Function
+  const handleWishlistToggle = async () => {
+    if (!product) return;
+
+    try {
+      const sessionRes = await fetch('/api/auth/session');
+      const sessionData = await sessionRes.json();
+
+      // Check if user is logged in
+      if (!sessionData?.user?.id) {
+        // Redirect to login if not logged in
+        const returnUrl = encodeURIComponent(window.location.pathname);
+        router.push(`/auth/login?returnUrl=${returnUrl}`);
+        return;
+      }
+
+      if (isWishlisted) {
+        // Remove from wishlist
+        const response = await fetch('/api/wishlist', {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            productId: product._id
+          }),
+        });
+
+        if (response.ok) {
+          setIsWishlisted(false);
+          // Update wishlist count if needed
+          window.dispatchEvent(new Event('wishlistUpdated'));
+          console.log('Removed from wishlist');
+        } else {
+          const error = await response.json();
+          throw new Error(error.error || 'Failed to remove from wishlist');
+        }
+      } else {
+        // Add to wishlist
+        const response = await fetch('/api/wishlist', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            productId: product._id
+          }),
+        });
+
+        if (response.ok) {
+          setIsWishlisted(true);
+          // Update wishlist count if needed
+          window.dispatchEvent(new Event('wishlistUpdated'));
+          console.log('Added to wishlist');
+        } else {
+          const error = await response.json();
+          throw new Error(error.error || 'Failed to add to wishlist');
+        }
+      }
+    } catch (error) {
+      console.error('Wishlist error:', error);
+      alert(error instanceof Error ? error.message : 'Something went wrong');
+    }
+  };
+
+  // Share Function
+  const handleShare = async () => {
+    const shareData = {
+      title: product?.name,
+      text: product?.description,
+      url: window.location.href,
+    };
+
+    try {
+      if (navigator.share && navigator.canShare(shareData)) {
+        // Native share (mobile)
+        await navigator.share(shareData);
+        console.log('Shared successfully');
+      } else {
+        // Fallback - copy to clipboard
+        await navigator.clipboard.writeText(window.location.href);
+        alert('Link copied to clipboard!');
+      }
+    } catch (error) {
+      if (error instanceof Error && error.name !== 'AbortError') {
+        console.error('Share error:', error);
+        // Fallback - copy to clipboard
+        try {
+          await navigator.clipboard.writeText(window.location.href);
+          alert('Link copied to clipboard!');
+        } catch (clipboardError) {
+          console.error('Clipboard error:', clipboardError);
+          alert('Share failed. You can copy the link manually.');
+        }
+      }
+    }
+  };
 
   return (
     <div className="space-y-6 text-gray-800">
@@ -296,7 +395,7 @@ const ProductInfo = ({
 
         <div className="flex space-x-3">
           <button
-            onClick={() => setIsWishlisted(!isWishlisted)}
+            onClick={handleWishlistToggle}  // ✅ Updated
             className="flex-1 flex items-center justify-center space-x-2 px-4 py-3 border rounded-lg hover:bg-gray-50 transition-colors"
           >
             {isWishlisted ? (
@@ -308,7 +407,7 @@ const ProductInfo = ({
           </button>
 
           <button
-            onClick={() => setShowShareModal(true)}
+            onClick={handleShare}  // ✅ Updated
             className="flex-1 flex items-center justify-center space-x-2 px-4 py-3 border rounded-lg hover:bg-gray-50 transition-colors"
           >
             <ShareIcon className="w-5 h-5" />
@@ -904,7 +1003,6 @@ export default function SingleProductPage() {
 
 
       if (isLoggedIn) {
-        // ✅ LOGGED IN USER - Backend API call
         const response = await fetch('/api/cart', {
           method: 'PUT',
           headers: {
@@ -923,9 +1021,11 @@ export default function SingleProductPage() {
 
         console.log('Product added to cart in backend');
       } else {
-        throw new Error
+        // ❌ NOT LOGGED IN - Redirect to login page
+        const returnUrl = encodeURIComponent(window.location.pathname);
+        router.push(`/auth/login?returnUrl=${returnUrl}`);
+        return;
       }
-
       // Dispatch event to update cart count in navbar
       window.dispatchEvent(new Event('cartUpdated'));
 
@@ -938,6 +1038,8 @@ export default function SingleProductPage() {
       alert(error instanceof Error ? error.message : 'Failed to add to cart');
     }
   };
+
+
 
 
   if (loading) return <ProductSkeleton />;
